@@ -4,464 +4,494 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TechFlow Solutions: Fraud Investigation Case Study</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        .lucide { width: 1.25rem; height: 1.25rem; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .tab:hover {
+            background: #e9ecef;
+        }
+        
+        .tab.active {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .alert {
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left: 4px solid;
+        }
+        
+        .alert-danger {
+            background: #fef2f2;
+            border-color: #dc2626;
+            color: #991b1b;
+        }
+        
+        .alert-warning {
+            background: #fffbeb;
+            border-color: #f59e0b;
+            color: #92400e;
+        }
+        
+        .alert-info {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            color: #1e40af;
+        }
+        
+        .alert-success {
+            background: #f0fdf4;
+            border-color: #10b981;
+            color: #059669;
+        }
+        
+        .card {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .card h3 {
+            color: #2563eb;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .tabs {
+                flex-direction: column;
+            }
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+        
+        .checklist {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .checklist h4 {
+            color: #374151;
+            margin-bottom: 15px;
+        }
+        
+        .checklist ul {
+            list-style: none;
+        }
+        
+        .checklist li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+        
+        .checklist input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+        }
+        
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+        
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .highlight {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+            margin: 20px 0;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            resize: vertical;
+            font-family: inherit;
+        }
+        
+        .reflection-box {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 TechFlow Solutions: The Missing Inventory Mystery</h1>
+            <p>A case study in fraud detection, internal controls, and AI-assisted analysis</p>
+        </div>
 
-    <script type="text/babel">
-        const { useState } = React;
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('scenario')">📋 The Case</button>
+            <button class="tab" onclick="showTab('investigation')">🧠 Investigation Guide</button>
+            <button class="tab" onclick="showTab('resources')">💰 Resources & Data</button>
+            <button class="tab" onclick="showTab('reflection')">✅ AI Reflection</button>
+        </div>
 
-        // Simple Lucide React icon components
-        const ChevronDown = () => <svg className="lucide"><polyline points="6,9 12,15 18,9"></polyline></svg>;
-        const ChevronRight = () => <svg className="lucide"><polyline points="9,18 15,12 9,6"></polyline></svg>;
-        const AlertTriangle = () => <svg className="lucide"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4"></path><path d="m12 17 .01 0"></path></svg>;
-        const DollarSign = () => <svg className="lucide"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>;
-        const FileText = () => <svg className="lucide"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg>;
-        const Brain = () => <svg className="lucide"><path d="M12 5a3 3 0 1 0-5.997.125 4 4 0 0 0-2.526 5.77 4 4 0 0 0 .556 6.588A4 4 0 1 0 12 18Z"></path><path d="M12 5a3 3 0 1 1 5.997.125 4 4 0 0 1 2.526 5.77 4 4 0 0 1-.556 6.588A4 4 0 1 1 12 18Z"></path><path d="M15 13a4.5 4.5 0 0 1-3-4 4.5 4.5 0 0 1-3 4"></path><path d="M17.599 6.5a3 3 0 0 0 .399-1.375"></path><path d="M6.003 5.125A3 3 0 0 0 6.401 6.5"></path><path d="M3.477 10.896a4 4 0 0 1 .585-.396"></path><path d="M19.938 10.5a4 4 0 0 1 .585.396"></path><path d="M6 18a4 4 0 0 1-1.967-.516"></path><path d="M19.967 17.484A4 4 0 0 1 18 18"></path></svg>;
-        const CheckCircle = () => <svg className="lucide"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22,4 12,14.01 9,11.01"></polyline></svg>;
-        const Users = () => <svg className="lucide"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>;
-
-        const CaseStudyWidget = () => {
-            const [activeTab, setActiveTab] = useState('scenario');
-            const [expandedSections, setExpandedSections] = useState({});
-            const [checkedItems, setCheckedItems] = useState({});
-
-            const toggleSection = (section) => {
-                setExpandedSections(prev => ({
-                    ...prev,
-                    [section]: !prev[section]
-                }));
-            };
-
-            const toggleCheck = (item) => {
-                setCheckedItems(prev => ({
-                    ...prev,
-                    [item]: !prev[item]
-                }));
-            };
-
-            const tabs = [
-                { id: 'scenario', label: 'The Case', icon: FileText },
-                { id: 'investigation', label: 'Investigation Guide', icon: Brain },
-                { id: 'resources', label: 'Resources & Data', icon: DollarSign },
-                { id: 'reflection', label: 'AI Reflection', icon: CheckCircle }
-            ];
-
-            const Section = ({ title, children, section, icon: Icon }) => (
-                <div className="mb-4 border border-gray-200 rounded-lg">
-                    <button
-                        onClick={() => toggleSection(section)}
-                        className="w-full px-4 py-3 text-left bg-gray-50 hover:bg-gray-100 flex items-center justify-between rounded-t-lg"
-                    >
-                        <div className="flex items-center space-x-2">
-                            <Icon className="h-5 w-5 text-blue-600" />
-                            <span className="font-medium">{title}</span>
-                        </div>
-                        {expandedSections[section] ? <ChevronDown className="h-5 w-5" /> : <ChevronRight className="h-5 w-5" />}
-                    </button>
-                    {expandedSections[section] && (
-                        <div className="p-4 border-t">{children}</div>
-                    )}
+        <div class="content">
+            <!-- SCENARIO TAB -->
+            <div id="scenario" class="tab-content active">
+                <div class="alert alert-danger">
+                    <h3>🚨 URGENT: Cash Flow Crisis</h3>
+                    <p>CEO Sarah Chen has called an emergency meeting. Despite record sales, TechFlow Solutions is facing severe cash shortages.</p>
                 </div>
-            );
 
-            return (
-                <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
-                    {/* Header */}
-                    <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6">
-                        <div className="flex items-center space-x-3">
-                            <AlertTriangle className="h-8 w-8" />
-                            <div>
-                                <h1 className="text-2xl font-bold">TechFlow Solutions: The Missing Inventory Mystery</h1>
-                                <p className="text-blue-100 mt-1">A case study in fraud detection, internal controls, and AI-assisted analysis</p>
-                            </div>
-                        </div>
+                <div class="card">
+                    <h3>👥 Company Background</h3>
+                    <p><strong>TechFlow Solutions</strong> - E-commerce platform selling tech accessories</p>
+                    <p><strong>Founded:</strong> 2019 | <strong>Employees:</strong> 45 | <strong>Annual Revenue:</strong> $8.2M (2023)</p>
+                    <br>
+                    <p><strong>Key Personnel:</strong></p>
+                    <ul>
+                        <li>• Sarah Chen - CEO/Founder</li>
+                        <li>• Marcus Rodriguez - CFO (hired 6 months ago)</li>
+                        <li>• Jennifer Kim - Operations Manager</li>
+                        <li>• David Park - Warehouse Manager (3 years with company)</li>
+                    </ul>
+                </div>
+
+                <div class="alert alert-warning">
+                    <h4>What Sarah Discovered:</h4>
+                    <ul>
+                        <li>• Bank balance shows only $12,000 despite $650,000 in monthly sales</li>
+                        <li>• Several large customer payments appear to be missing</li>
+                        <li>• Inventory counts don't match sales records</li>
+                        <li>• Some vendors complaining about unpaid invoices</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>🚩 Initial Red Flags</h3>
+                    <ul>
+                        <li>• David Park recently purchased a new luxury car</li>
+                        <li>• Some inventory deliveries lack proper documentation</li>
+                        <li>• Customer complaints about "shipped" items never arriving</li>
+                        <li>• Cash deposits sometimes delayed or smaller than expected</li>
+                    </ul>
+                </div>
+
+                <div class="alert alert-info">
+                    <h3>🎯 Your Mission</h3>
+                    <p><strong>You are TechFlow's newly hired forensic accountant.</strong></p>
+                    <p>Sarah Chen has given you full access to investigate this crisis. You must:</p>
+                    <ul>
+                        <li>• Identify what types of fraud may be occurring</li>
+                        <li>• Analyze internal control weaknesses</li>
+                        <li>• Perform bank reconciliation analysis</li>
+                        <li>• Recommend preventive measures</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- INVESTIGATION TAB -->
+            <div id="investigation" class="tab-content">
+                <div class="alert alert-info">
+                    <h3>🤖 AI-Assisted Investigation Protocol</h3>
+                    <p>Use AI tools to help analyze this case, but remember: you must craft effective prompts and critically evaluate all AI responses.</p>
+                </div>
+
+                <div class="checklist">
+                    <h3>Phase 1: Understanding the Fraud Landscape</h3>
+                    <h4>Open Investigation Questions:</h4>
+                    <ul>
+                        <li><input type="checkbox"> What types of fraud schemes could explain these symptoms?</li>
+                        <li><input type="checkbox"> Which red flags are most concerning and why?</li>
+                        <li><input type="checkbox"> Who has the opportunity and access to commit these potential frauds?</li>
+                    </ul>
+                    <div class="card">
+                        <p><strong>AI Strategy:</strong> Develop prompts to help you understand fraud typologies, but verify responses against chapter concepts.</p>
+                    </div>
+                </div>
+
+                <div class="checklist">
+                    <h3>Phase 2: Internal Controls Analysis</h3>
+                    <h4>Control Environment Assessment:</h4>
+                    <ul>
+                        <li><input type="checkbox"> What cash handling controls are likely missing or weak?</li>
+                        <li><input type="checkbox"> How could inventory controls be strengthened?</li>
+                        <li><input type="checkbox"> What duties should be segregated?</li>
+                    </ul>
+                </div>
+
+                <div class="checklist">
+                    <h3>Phase 3: Bank Reconciliation Deep Dive</h3>
+                    <h4>Follow the Money Trail:</h4>
+                    <ul>
+                        <li><input type="checkbox"> What should you look for in the bank reconciliation process?</li>
+                        <li><input type="checkbox"> How can timing differences hide fraudulent activity?</li>
+                        <li><input type="checkbox"> What patterns should you analyze in deposit timing and amounts?</li>
+                    </ul>
+                    <div class="card">
+                        <p><strong>Critical Thinking:</strong> Don't just ask AI for answers—ask it to help you develop investigation procedures.</p>
+                    </div>
+                </div>
+
+                <div class="highlight">
+                    <h4>⚡ Challenge Mode:</h4>
+                    <p>Instead of asking "What is embezzlement?", try: "Help me develop a checklist to investigate potential cash embezzlement in a small e-commerce company with these symptoms..." Then critique the AI's response against your textbook knowledge!</p>
+                </div>
+            </div>
+
+            <!-- RESOURCES TAB -->
+            <div id="resources" class="tab-content">
+                <h3>💰 Financial Data Summary</h3>
+                
+                <div class="grid">
+                    <div class="alert alert-info">
+                        <h4>Recent Monthly Sales</h4>
+                        <ul>
+                            <li>January: $620,000</li>
+                            <li>February: $650,000</li>
+                            <li>March: $640,000</li>
+                        </ul>
+                    </div>
+                    <div class="alert alert-danger">
+                        <h4>Cash Balances</h4>
+                        <ul>
+                            <li>Book Balance: $45,000</li>
+                            <li>Bank Balance: $12,000</li>
+                            <li>Outstanding Checks: $8,000</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>📋 Key Documents Available</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>✅ Available Records</h4>
+                        <ul>
+                            <li>• 6 months of bank statements</li>
+                            <li>• Cash receipts journal</li>
+                            <li>• Customer payment records</li>
+                            <li>• Inventory shipping logs</li>
+                            <li>• Vendor payment history</li>
+                        </ul>
+                    </div>
+                    <div class="alert alert-danger">
+                        <h4>⚠️ Missing/Suspicious</h4>
+                        <ul>
+                            <li>• Some deposit slips</li>
+                            <li>• Inventory receiving reports</li>
+                            <li>• Cash count sheets</li>
+                            <li>• Several customer files</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>👥 Employee Access Matrix</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Cash Handling</th>
+                            <th>Bank Deposits</th>
+                            <th>Inventory</th>
+                            <th>Customer Records</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>David Park</strong></td>
+                            <td style="text-align: center">✓</td>
+                            <td style="text-align: center">✓</td>
+                            <td style="text-align: center">✓</td>
+                            <td style="text-align: center">✓</td>
+                        </tr>
+                        <tr style="background: #f8f9fa;">
+                            <td><strong>Jennifer Kim</strong></td>
+                            <td style="text-align: center">✓</td>
+                            <td style="text-align: center">-</td>
+                            <td style="text-align: center">✓</td>
+                            <td style="text-align: center">✓</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Marcus Rodriguez</strong></td>
+                            <td style="text-align: center">✓</td>
+                            <td style="text-align: center">✓</td>
+                            <td style="text-align: center">-</td>
+                            <td style="text-align: center">✓</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- REFLECTION TAB -->
+            <div id="reflection" class="tab-content">
+                <div class="alert alert-success">
+                    <h3>🧠 Meta-Learning: Reflecting on AI Usage</h3>
+                    <p>The real learning happens when you analyze how well AI helped (or didn't help) your investigation.</p>
+                </div>
+
+                <div class="card">
+                    <h3>🎯 Prompt Engineering Reflection</h3>
+                    
+                    <div class="reflection-box">
+                        <label><strong>What was your most effective prompt?</strong></label>
+                        <textarea rows="3" placeholder="Describe the prompt that gave you the most useful insights..."></textarea>
                     </div>
 
-                    {/* Navigation Tabs */}
-                    <div className="flex border-b">
-                        {tabs.map(tab => {
-                            const IconComponent = tab.icon;
-                            return (
-                                <button
-                                    key={tab.id}
-                                    onClick={() => setActiveTab(tab.id)}
-                                    className={`flex items-center space-x-2 px-6 py-3 font-medium transition-colors ${
-                                        activeTab === tab.id
-                                            ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
-                                            : 'text-gray-600 hover:text-gray-900'
-                                    }`}
-                                >
-                                    <IconComponent className="h-4 w-4" />
-                                    <span>{tab.label}</span>
-                                </button>
-                            );
-                        })}
+                    <div class="reflection-box">
+                        <label><strong>What prompt didn't work well?</strong></label>
+                        <textarea rows="3" placeholder="Which prompt gave unhelpful or generic responses?"></textarea>
                     </div>
 
-                    <div className="p-6">
-                        {/* Scenario Tab */}
-                        {activeTab === 'scenario' && (
-                            <div className="space-y-6">
-                                <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                                    <div className="flex items-start space-x-3">
-                                        <AlertTriangle className="h-6 w-6 text-red-600 mt-0.5" />
-                                        <div>
-                                            <h3 className="font-semibold text-red-900 mb-2">URGENT: Cash Flow Crisis</h3>
-                                            <p className="text-red-800">
-                                                CEO Sarah Chen has called an emergency meeting. Despite record sales, TechFlow Solutions is facing severe cash shortages.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
+                    <div class="reflection-box">
+                        <label><strong>How did you improve your prompting?</strong></label>
+                        <textarea rows="3" placeholder="What changes made your prompts more specific and effective?"></textarea>
+                    </div>
+                </div>
 
-                                <Section title="Company Background" section="background" icon={Users}>
-                                    <div className="space-y-3">
-                                        <p><strong>TechFlow Solutions</strong> - E-commerce platform selling tech accessories</p>
-                                        <p><strong>Founded:</strong> 2019 | <strong>Employees:</strong> 45 | <strong>Annual Revenue:</strong> $8.2M (2023)</p>
-                                        <p><strong>Key Personnel:</strong></p>
-                                        <ul className="list-disc list-inside ml-4 space-y-1">
-                                            <li>Sarah Chen - CEO/Founder</li>
-                                            <li>Marcus Rodriguez - CFO (hired 6 months ago)</li>
-                                            <li>Jennifer Kim - Operations Manager</li>
-                                            <li>David Park - Warehouse Manager (3 years with company)</li>
-                                        </ul>
-                                    </div>
-                                </Section>
+                <div class="card">
+                    <h3>🔍 AI Response Quality Assessment</h3>
+                    
+                    <div class="reflection-box">
+                        <label><strong>1. Did the AI responses align with your textbook knowledge?</strong></label>
+                        <textarea rows="3" placeholder="Compare AI responses to Chapter 5 concepts..."></textarea>
+                    </div>
 
-                                <Section title="The Problem Unfolds" section="problem" icon={AlertTriangle}>
-                                    <div className="space-y-4">
-                                        <div className="bg-yellow-50 p-4 rounded-lg">
-                                            <h4 className="font-semibold text-yellow-900 mb-2">What Sarah Discovered:</h4>
-                                            <ul className="list-disc list-inside space-y-2 text-yellow-800">
-                                                <li>Bank balance shows only $12,000 despite $650,000 in monthly sales</li>
-                                                <li>Several large customer payments appear to be missing</li>
-                                                <li>Inventory counts don't match sales records</li>
-                                                <li>Some vendors complaining about unpaid invoices</li>
-                                            </ul>
-                                        </div>
-                                        
-                                        <div className="bg-gray-50 p-4 rounded-lg">
-                                            <h4 className="font-semibold mb-2">Initial Red Flags:</h4>
-                                            <ul className="list-disc list-inside space-y-1 text-gray-700">
-                                                <li>David Park recently purchased a new luxury car</li>
-                                                <li>Some inventory deliveries lack proper documentation</li>
-                                                <li>Customer complaints about "shipped" items never arriving</li>
-                                                <li>Cash deposits sometimes delayed or smaller than expected</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </Section>
+                    <div class="reflection-box">
+                        <label><strong>2. What did AI miss or get wrong?</strong></label>
+                        <textarea rows="3" placeholder="Identify gaps or errors in AI responses..."></textarea>
+                    </div>
 
-                                <Section title="Your Mission" section="mission" icon={FileText}>
-                                    <div className="bg-blue-50 p-4 rounded-lg">
-                                        <h4 className="font-semibold text-blue-900 mb-2">You are TechFlow's newly hired forensic accountant.</h4>
-                                        <p className="text-blue-800 mb-3">
-                                            Sarah Chen has given you full access to investigate this crisis. You must:
-                                        </p>
-                                        <ul className="list-disc list-inside space-y-1 text-blue-800">
-                                            <li>Identify what types of fraud may be occurring</li>
-                                            <li>Analyze internal control weaknesses</li>
-                                            <li>Perform bank reconciliation analysis</li>
-                                            <li>Recommend preventive measures</li>
-                                        </ul>
-                                    </div>
-                                </Section>
-                            </div>
-                        )}
+                    <div class="reflection-box">
+                        <label><strong>3. Where did your domain knowledge prove essential?</strong></label>
+                        <textarea rows="3" placeholder="When did you need to correct or supplement AI responses?"></textarea>
+                    </div>
+                </div>
 
-                        {/* Investigation Guide Tab */}
-                        {activeTab === 'investigation' && (
-                            <div className="space-y-6">
-                                <div className="bg-gradient-to-r from-purple-50 to-blue-50 p-4 rounded-lg border">
-                                    <h3 className="font-semibold text-purple-900 mb-2 flex items-center">
-                                        <Brain className="h-5 w-5 mr-2" />
-                                        AI-Assisted Investigation Protocol
-                                    </h3>
-                                    <p className="text-purple-800">
-                                        Use AI tools to help analyze this case, but remember: you must craft effective prompts and critically evaluate all AI responses.
-                                    </p>
-                                </div>
+                <div class="highlight">
+                    <h4>📝 Final Investigation Report</h4>
+                    <p><strong>Synthesis Challenge:</strong> Combine your AI-assisted analysis with textbook knowledge to prepare a final report addressing:</p>
+                    <ul>
+                        <li>• Most likely fraud scenario(s)</li>
+                        <li>• Internal control recommendations</li>
+                        <li>• Bank reconciliation procedures needed</li>
+                        <li>• Prevention strategies for the future</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-                                <Section title="Phase 1: Understanding the Fraud Landscape" section="phase1" icon={AlertTriangle}>
-                                    <div className="space-y-4">
-                                        <div className="border-l-4 border-red-400 pl-4">
-                                            <h4 className="font-semibold mb-2">Open Investigation Questions:</h4>
-                                            <ul className="space-y-2">
-                                                <li className="flex items-start space-x-2">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={checkedItems.fraud_types} 
-                                                        onChange={() => toggleCheck('fraud_types')}
-                                                        className="mt-1"
-                                                    />
-                                                    <span>What types of fraud schemes could explain these symptoms?</span>
-                                                </li>
-                                                <li className="flex items-start space-x-2">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={checkedItems.red_flags} 
-                                                        onChange={() => toggleCheck('red_flags')}
-                                                        className="mt-1"
-                                                    />
-                                                    <span>Which red flags are most concerning and why?</span>
-                                                </li>
-                                                <li className="flex items-start space-x-2">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={checkedItems.perpetrator} 
-                                                        onChange={() => toggleCheck('perpetrator')}
-                                                        className="mt-1"
-                                                    />
-                                                    <span>Who has the opportunity and access to commit these potential frauds?</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className="bg-gray-50 p-3 rounded">
-                                            <p className="text-sm text-gray-700">
-                                                <strong>AI Strategy:</strong> Develop prompts to help you understand fraud typologies, but verify responses against chapter concepts.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </Section>
-
-                                <Section title="Phase 2: Internal Controls Analysis" section="phase2" icon={CheckCircle}>
-                                    <div className="space-y-4">
-                                        <div className="border-l-4 border-orange-400 pl-4">
-                                            <h4 className="font-semibold mb-2">Control Environment Assessment:</h4>
-                                            <ul className="space-y-2">
-                                                <li className="flex items-start space-x-2">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={checkedItems.cash_controls} 
-                                                        onChange={() => toggleCheck('cash_controls')}
-                                                        className="mt-1"
-                                                    />
-                                                    <span>What cash handling controls are likely missing or weak?</span>
-                                                </li>
-                                                <li className="flex items-start space-x-2">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={checkedItems.inventory_controls} 
-                                                        onChange={() => toggleCheck('inventory_controls')}
-                                                        className="mt-1"
-                                                    />
-                                                    <span>How could inventory controls be strengthened?</span>
-                                                </li>
-                                                <li className="flex items-start space-x-2">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={checkedItems.segregation} 
-                                                        onChange={() => toggleCheck('segregation')}
-                                                        className="mt-1"
-                                                    />
-                                                    <span>What duties should be segregated?</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </Section>
-
-                                <Section title="Phase 3: Bank Reconciliation Deep Dive" section="phase3" icon={DollarSign}>
-                                    <div className="space-y-4">
-                                        <div className="border-l-4 border-green-400 pl-4">
-                                            <h4 className="font-semibold mb-2">Follow the Money Trail:</h4>
-                                            <ul className="space-y-2">
-                                                <li className="flex items-start space-x-2">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={checkedItems.bank_rec} 
-                                                        onChange={() => toggleCheck('bank_rec')}
-                                                        className="mt-1"
-                                                    />
-                                                    <span>What should you look for in the bank reconciliation process?</span>
-                                                </li>
-                                                <li className="flex items-start space-x-2">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={checkedItems.timing_diff} 
-                                                        onChange={() => toggleCheck('timing_diff')}
-                                                        className="mt-1"
-                                                    />
-                                                    <span>How can timing differences hide fraudulent activity?</span>
-                                                </li>
-                                                <li className="flex items-start space-x-2">
-                                                    <input 
-                                                        type="checkbox" 
-                                                        checked={checkedItems.deposit_analysis} 
-                                                        onChange={() => toggleCheck('deposit_analysis')}
-                                                        className="mt-1"
-                                                    />
-                                                    <span>What patterns should you analyze in deposit timing and amounts?</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div className="bg-blue-50 p-3 rounded">
-                                            <p className="text-sm text-blue-700">
-                                                <strong>Critical Thinking:</strong> Don't just ask AI for answers—ask it to help you develop investigation procedures.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </Section>
-
-                                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-                                    <h4 className="font-semibold text-amber-900 mb-2">⚡ Challenge Mode:</h4>
-                                    <p className="text-amber-800">
-                                        Instead of asking "What is embezzlement?", try: "Help me develop a checklist to investigate potential cash embezzlement in a small e-commerce company with these symptoms..." 
-                                        Then critique the AI's response against your textbook knowledge!
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Resources Tab */}
-                        {activeTab === 'resources' && (
-                            <div className="space-y-6">
-                                <Section title="Financial Data Summary" section="financial" icon={DollarSign}>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="bg-blue-50 p-4 rounded-lg">
-                                            <h4 className="font-semibold text-blue-900 mb-2">Recent Monthly Sales</h4>
-                                            <ul className="space-y-1 text-blue-800">
-                                                <li>January: $620,000</li>
-                                                <li>February: $650,000</li>
-                                                <li>March: $640,000</li>
-                                            </ul>
-                                        </div>
-                                        <div className="bg-red-50 p-4 rounded-lg">
-                                            <h4 className="font-semibold text-red-900 mb-2">Cash Balances</h4>
-                                            <ul className="space-y-1 text-red-800">
-                                                <li>Book Balance: $45,000</li>
-                                                <li>Bank Balance: $12,000</li>
-                                                <li>Outstanding Checks: $8,000</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </Section>
-
-                                <Section title="Key Documents Available" section="documents" icon={FileText}>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="border border-gray-300 rounded-lg p-3">
-                                            <h5 className="font-semibold mb-2">✓ Available Records</h5>
-                                            <ul className="text-sm space-y-1">
-                                                <li>• 6 months of bank statements</li>
-                                                <li>• Cash receipts journal</li>
-                                                <li>• Customer payment records</li>
-                                                <li>• Inventory shipping logs</li>
-                                                <li>• Vendor payment history</li>
-                                            </ul>
-                                        </div>
-                                        <div className="border border-red-300 rounded-lg p-3 bg-red-50">
-                                            <h5 className="font-semibold mb-2 text-red-800">⚠ Missing/Suspicious</h5>
-                                            <ul className="text-sm space-y-1 text-red-700">
-                                                <li>• Some deposit slips</li>
-                                                <li>• Inventory receiving reports</li>
-                                                <li>• Cash count sheets</li>
-                                                <li>• Several customer files</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </Section>
-
-                                <Section title="Employee Access Matrix" section="access" icon={Users}>
-                                    <div className="overflow-x-auto">
-                                        <table className="w-full text-sm border-collapse border border-gray-300">
-                                            <thead className="bg-gray-100">
-                                                <tr>
-                                                    <th className="border border-gray-300 p-2 text-left">Employee</th>
-                                                    <th className="border border-gray-300 p-2">Cash Handling</th>
-                                                    <th className="border border-gray-300 p-2">Bank Deposits</th>
-                                                    <th className="border border-gray-300 p-2">Inventory</th>
-                                                    <th className="border border-gray-300 p-2">Customer Records</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td className="border border-gray-300 p-2 font-medium">David Park</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                </tr>
-                                                <tr className="bg-gray-50">
-                                                    <td className="border border-gray-300 p-2 font-medium">Jennifer Kim</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                    <td className="border border-gray-300 p-2 text-center">-</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                </tr>
-                                                <tr>
-                                                    <td className="border border-gray-300 p-2 font-medium">Marcus Rodriguez</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                    <td className="border border-gray-300 p-2 text-center">-</td>
-                                                    <td className="border border-gray-300 p-2 text-center">✓</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </Section>
-                            </div>
-                        )}
-
-                        {/* AI Reflection Tab */}
-                        {activeTab === 'reflection' && (
-                            <div className="space-y-6">
-                                <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg border">
-                                    <h3 className="font-semibold text-green-900 mb-2">Meta-Learning: Reflecting on AI Usage</h3>
-                                    <p className="text-green-800">
-                                        The real learning happens when you analyze how well AI helped (or didn't help) your investigation.
-                                    </p>
-                                </div>
-
-                                <Section title="Prompt Engineering Reflection" section="prompts" icon={Brain}>
-                                    <div className="space-y-4">
-                                        <div className="bg-yellow-50 p-4 rounded-lg">
-                                            <h4 className="font-semibold mb-3">Evaluate Your Prompts:</h4>
-                                            <div className="space-y-3">
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">What was your most effective prompt?</label>
-                                                    <textarea className="w-full p-2 border border-gray-300 rounded-md text-sm" rows="2" placeholder="Describe the prompt that gave you the most useful insights..."></textarea>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">What prompt didn't work well?</label>
-                                                    <textarea className="w-full p-2 border border-gray-300 rounded-md text-sm" rows="2" placeholder="Which prompt gave unhelpful or generic responses?"></textarea>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-medium mb-1">How did you improve your prompting?</label>
-                                                    <textarea className="w-full p-2 border border-gray-300 rounded-md text-sm" rows="2" placeholder="What changes made your prompts more specific and effective?"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Section>
-
-                                <Section title="AI Response Quality Assessment" section="quality" icon={CheckCircle}>
-                                    <div className="space-y-4">
-                                        <div className="bg-blue-50 p-4 rounded-lg">
-                                            <h4 className="font-semibold mb-3">Critical Analysis Questions:</h4>
-                                            <div className="space-y-4">
-                                                <div className="flex items-start space-x-3">
-                                                    <div className="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 text-xs font-bold mt-0.5">1</div>
-                                                    <div className="flex-1">
-                                                        <p className="font-medium">Did the AI responses align with your textbook knowledge?</p>
-                                                        <textarea className="w-full mt-1 p-2 border border-gray-300 rounded-md text-sm" rows="2" placeholder="Compare AI responses to Chapter 5 concepts..."></textarea>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div className="flex items-start space-x-3">
-                                                    <div className="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center text-blue-800 text-xs font-bold mt-0.5">2</div>
-                                                    <div className="flex-1">
-                                                        <p className="font-medium">What did AI miss or get wrong?</p>
-                                                        <textarea className="w-full mt-1 p-2 border border-gray-300 rounded-md text-sm" rows="2" placeholder="Identify gaps or errors in AI responses..."></textarea>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div className="flex items-start space-x-3">
-                                                    <div className="w-6 h-6 bg-blue-200 rounded-full flex items-center justify-center text-
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>
